@@ -1,0 +1,331 @@
+#ctrl+ shift + i = composer 
+class DesignPatternsDemo:
+    def execute(self):
+        print("Demostrando patrones de diseño básicos en Python...\n")
+
+        # 1. Singleton
+        self.singleton_example()
+
+        # 2. Factory Method
+        self.factory_method_example()
+
+        # 3. Abstract Factory
+        self.abstract_factory_example()
+
+        # 4. Builder
+        self.builder_example()
+
+        # 5. Prototype
+        self.prototype_example()
+
+        # 6. Adapter
+        self.adapter_example()
+
+        # 7. Decorator
+        self.decorator_example()
+
+        # 8. Strategy
+        self.strategy_example()
+
+        # 9. Observer
+        self.observer_example()
+
+        # 10. Command
+        self.command_example()
+
+        # 11. Template Method
+        self.template_method_example()
+
+        # 12. State
+        self.state_example()
+
+        # 13. Facade
+        self.facade_example()
+
+    # Singleton
+    def singleton_example(self):
+        class Singleton:
+            _instance = None
+
+            def __new__(cls, *args, **kwargs):
+                if not cls._instance:
+                    cls._instance = super().__new__(cls)
+                return cls._instance
+
+        instance1 = Singleton()
+        instance2 = Singleton()
+        print("Singleton: ", instance1 is instance2)
+
+    # Factory Method
+    def factory_method_example(self):
+        class Animal:
+            def speak(self):
+                pass
+
+        class Dog(Animal):
+            def speak(self):
+                return "Woof!"
+
+        class Cat(Animal):
+            def speak(self):
+                return "Meow!"
+
+        class AnimalFactory:
+            @staticmethod
+            def create_animal(animal_type):
+                if animal_type == "dog":
+                    return Dog()
+                elif animal_type == "cat":
+                    return Cat()
+
+        dog = AnimalFactory.create_animal("dog")
+        cat = AnimalFactory.create_animal("cat")
+        print("Factory Method: ", dog.speak(), cat.speak())
+
+    # Abstract Factory
+    def abstract_factory_example(self):
+        class Dog:
+            def speak(self):
+                return "Woof!"
+
+        class Cat:
+            def speak(self):
+                return "Meow!"
+
+        class AnimalFactory:
+            def create_dog(self):
+                return Dog()
+
+            def create_cat(self):
+                return Cat()
+
+        factory = AnimalFactory()
+        dog = factory.create_dog()
+        cat = factory.create_cat()
+        print("Abstract Factory: ", dog.speak(), cat.speak())
+
+    # Builder
+    def builder_example(self):
+        class House:
+            def __init__(self):
+                self.walls = None
+                self.roof = None
+
+        class HouseBuilder:
+            def __init__(self):
+                self.house = House()
+
+            def build_walls(self, walls):
+                self.house.walls = walls
+                return self
+
+            def build_roof(self, roof):
+                self.house.roof = roof
+                return self
+
+            def get_result(self):
+                return self.house
+
+        builder = HouseBuilder()
+        house = builder.build_walls("Brick walls").build_roof("Tile roof").get_result()
+        print("Builder: ", house.walls, house.roof)
+
+    # Prototype
+    def prototype_example(self):
+        import copy
+
+        class Prototype:
+            def __init__(self, value):
+                self.value = value
+
+            def clone(self):
+                return copy.deepcopy(self)
+
+        original = Prototype(42)
+        clone = original.clone()
+        print("Prototype: ", original.value, clone.value)
+
+    # Adapter
+    def adapter_example(self):
+        class Target:
+            def request(self):
+                return "Target behavior"
+
+        class Adaptee:
+            def specific_request(self):
+                return "Adaptee behavior"
+
+        class Adapter(Target):
+            def __init__(self, adaptee):
+                self.adaptee = adaptee
+
+            def request(self):
+                return self.adaptee.specific_request()
+
+        adaptee = Adaptee()
+        adapter = Adapter(adaptee)
+        print("Adapter: ", adapter.request())
+
+    # Decorator
+    def decorator_example(self):
+        class Coffee:
+            def cost(self):
+                return 5
+
+            def description(self):
+                return "Coffee"
+
+        class MilkDecorator:
+            def __init__(self, coffee):
+                self._coffee = coffee
+
+            def cost(self):
+                return self._coffee.cost() + 2
+
+            def description(self):
+                return self._coffee.description() + " with milk"
+
+        coffee = Coffee()
+        milk_coffee = MilkDecorator(coffee)
+        print("Decorator: ", milk_coffee.description(), milk_coffee.cost())
+
+    # Strategy
+    def strategy_example(self):
+        class Context:
+            def __init__(self, strategy):
+                self._strategy = strategy
+
+            def execute(self):
+                return self._strategy()
+
+        def strategy_a():
+            return "Strategy A"
+
+        def strategy_b():
+            return "Strategy B"
+
+        context = Context(strategy_a)
+        print("Strategy: ", context.execute())
+        context._strategy = strategy_b
+        print("Strategy: ", context.execute())
+
+    # Observer
+    def observer_example(self):
+        class Subject:
+            def __init__(self):
+                self._observers = []
+
+            def attach(self, observer):
+                self._observers.append(observer)
+
+            def notify(self):
+                for observer in self._observers:
+                    observer.update()
+
+        class Observer:
+            def update(self):
+                print("Observer notified!")
+
+        subject = Subject()
+        observer = Observer()
+        subject.attach(observer)
+        subject.notify()
+
+    # Command
+    def command_example(self):
+        class Light:
+            def turn_on(self):
+                print("Light is on")
+
+        class Command:
+            def execute(self):
+                pass
+
+        class TurnOnCommand(Command):
+            def __init__(self, light):
+                self.light = light
+
+            def execute(self):
+                self.light.turn_on()
+
+        light = Light()
+        command = TurnOnCommand(light)
+        command.execute()
+
+    # Template Method
+    def template_method_example(self):
+        class AbstractClass:
+            def template_method(self):
+                self.step1()
+                self.step2()
+
+            def step1(self):
+                pass
+
+            def step2(self):
+                pass
+
+        class ConcreteClass(AbstractClass):
+            def step1(self):
+                print("Step 1")
+
+            def step2(self):
+                print("Step 2")
+
+        obj = ConcreteClass()
+        obj.template_method()
+
+    # State
+    def state_example(self):
+        class Context:
+            def __init__(self, state):
+                self._state = state
+
+            def set_state(self, state):
+                self._state = state
+
+            def request(self):
+                self._state.handle()
+
+        class State:
+            def handle(self):
+                pass
+
+        class ConcreteStateA(State):
+            def handle(self):
+                print("State A handling request")
+
+        class ConcreteStateB(State):
+            def handle(self):
+                print("State B handling request")
+
+        context = Context(ConcreteStateA())
+        context.request()
+        context.set_state(ConcreteStateB())
+        context.request()
+
+    # Facade
+    def facade_example(self):
+        class SubsystemA:
+            def operation(self):
+                return "Subsystem A operation"
+
+        class SubsystemB:
+            def operation(self):
+                return "Subsystem B operation"
+
+        class Facade:
+            def __init__(self):
+                self.subsystem_a = SubsystemA()
+                self.subsystem_b = SubsystemB()
+
+            def operation(self):
+                return f"{self.subsystem_a.operation()} + {self.subsystem_b.operation()}"
+
+        facade = Facade()
+        print("Facade: ", facade.operation())
+
+
+# Ejecutar la clase
+demo = DesignPatternsDemo()
+demo.execute()
